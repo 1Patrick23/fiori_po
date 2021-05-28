@@ -1,0 +1,154 @@
+<mvc:View
+	controllerName="fioripo.controller.Detail"
+	xmlns="sap.m"
+	xmlns:layout="sap.ui.layout"
+	xmlns:semantic="sap.f.semantic"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<semantic:SemanticPage
+		id="detailPage"
+		busy="{detailView>/busy}"
+		busyIndicatorDelay="{detailView>/delay}"
+		showFooter="true">
+		<semantic:titleHeading>
+			<Title
+				text="{PoNumber}"
+				level="H2"/>
+		</semantic:titleHeading>
+		
+		<semantic:headerContent>
+			<layout:HorizontalLayout allowWrapping="true">
+				<layout:VerticalLayout class="sapUiMediumMarginEnd">
+					<ObjectAttribute title="Nettowert" text="{NetValue}"/>
+					<ObjectAttribute title="Waehrung" text="{Currency}"/>
+					<ObjectAttribute title="Lieferant" text="{Vendor}"/>
+					<Text text=""/>
+					<ObjectAttribute title="Angelegt am" 
+						text="{
+							path: 'CreatedOn',
+							type: 'sap.ui.model.type.Date',
+							formatOptions: {
+								pattern: 'dd.MM.YYYY'
+							}
+						}"/>
+					<ObjectAttribute title="Angelegt von" text="{CreatedBy}"/>
+					<ObjectAttribute title="Zahlungsbedingungen" text="{Pmnttrms}"/>
+					<ObjectAttribute title="Buchungskreis" text="{CoCode}"/>
+				</layout:VerticalLayout>
+
+				<layout:VerticalLayout class="sapUiMediumMarginEnd">
+					<ObjectAttribute title="Status"/>
+					<ObjectStatus text="{Status}"
+						state="{/objectDescription/status}"/>
+				</layout:VerticalLayout>
+			</layout:HorizontalLayout>
+		</semantic:headerContent>
+		<semantic:content>
+			<Table
+				id="lineItemsList"
+				width="auto"
+				items="{Items}"
+				updateFinished=".onListUpdateFinished"
+				noDataText="{i18n>detailLineItemTableNoDataText}"
+				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+				<headerToolbar>
+					<Toolbar>
+						<Title
+							id="lineItemsTitle"
+							text="Bestellpositionen"
+							titleStyle="H3"
+							level="H3"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="columnLineNo">
+						<Text text="Position" id="labelLineNo"/>
+					</Column>
+					<Column
+						minScreenWidth="Tablet"
+						demandPopin="true"
+						hAlign="End"
+						id="columnMaterial">
+						<Text text="{/#POItem/Material/@sap:label}" id="labelMaterial"/>
+					</Column>
+					<Column
+						minScreenWidth="Tablet"
+						demandPopin="true"
+						hAlign="End"
+						id="columnQuantity">
+						<Text text="{/#POItemService/Quantity/@sap:label}" id="labelQuantity"/>
+					</Column>
+					<Column
+						minScreenWidth="Tablet"
+						demandPopin="true"
+						hAlign="End"
+						id="columnNetPrice">
+						<Text text="{/#POItem/NetPrice/@sap:label}" id="labelNetPrice"/>
+					</Column>
+					<Column
+						minScreenWidth="Tablet"
+						demandPopin="true"
+						hAlign="End"
+						id="columnPlant">
+						<Text text="{/#POItem/Plant/@sap:label}" id="labelPlant"/>
+					</Column>
+					<Column
+						minScreenWidth="Tablet"
+						demandPopin="true"
+						hAlign="End"
+						id="columnStoreLoc">
+						<Text text="{/#POItem/StoreLoc/@sap:label}" id="labelStoreLoc"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<ObjectIdentifier
+								title="{PoItem}"/>
+							<Text text="{Material}"/>
+							<ObjectNumber number="{Quantity}"/>
+							<ObjectNumber number="{NetPrice}"/>
+							<Text text="{Plant}"/>
+							<Text text="{StoreLoc}"/>	
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<!--Semantic ShareMenu Buttons-->
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction
+				id="shareEmail"
+				press=".onSendEmailPress"/>
+		</semantic:sendEmailAction>
+
+		<semantic:closeAction>
+			<semantic:CloseAction
+					id="closeColumn"
+					press=".onCloseDetailPress"/>
+		</semantic:closeAction>
+
+		<semantic:fullScreenAction>
+			<semantic:FullScreenAction
+					id="enterFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:fullScreenAction>
+		<semantic:exitFullScreenAction>
+			<semantic:ExitFullScreenAction
+					id="exitFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:exitFullScreenAction>
+
+		<semantic:positiveAction>
+			<semantic:PositiveAction text="Annehmen" id="buttonOnApproved" press="onApproved" />
+		</semantic:positiveAction>
+
+		<semantic:negativeAction>
+			<semantic:NegativeAction text="Ablehnen" id="buttonOnReject" press="onReject"  />
+		</semantic:negativeAction>
+
+	</semantic:SemanticPage>
+
+</mvc:View>
